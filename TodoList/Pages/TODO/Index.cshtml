@@ -31,41 +31,45 @@
         </form>
     </div>
 </div>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.listPositions[0].ID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.listPositions[0].Task)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.listPositions[0].WriteStamp)
-            </th>
-            <th>
-                &nbsp;
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.listPositions)
-        {
+<form method="post">
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Task)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.WriteStamp)
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.listPositions[0].ID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.listPositions[0].Task)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.listPositions[0].WriteStamp)
+                </th>
+                <th>
+                    &nbsp;
+                </th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.listPositions)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Task)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.WriteStamp)
+                    </td>
+                    <td>
+                        <input type="submit" value="Delete" asp-page-handler="delete" asp-route-id="@item.ID" class="btn btn-danger" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

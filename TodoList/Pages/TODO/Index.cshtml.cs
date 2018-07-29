@@ -37,5 +37,30 @@ namespace TodoList.Pages.TODO
 
             return RedirectToPage("Index");
         }
+        public async Task<IActionResult> OnPostDeleteAsync(int? ID)
+        {
+            if (ID == null)
+            {
+                return Page();
+            }
+            try
+            {
+                listPosition = await _context.ListPositions.FindAsync(ID);
+            }
+            catch (Exception ex)
+            {
+                
+                return Page();
+            }
+            
+
+            if (listPosition != null)
+            {
+                _context.ListPositions.Remove(listPosition);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToPage("Index");
+        }
     }
 }

@@ -1,0 +1,42 @@
+﻿@page
+@model TodoList.Pages.TODO.FullFilledModel
+@{
+    ViewData["Title"] = "FullFilled";
+}
+
+<h2>FullFilled positions</h2>
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.fullFilledPositions[0].Task)
+            </th>
+            <th>
+                @Html.DisplayFor(model => model.filledDateHeader)
+            </th>
+            <th>
+                &nbsp;
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.fullFilledPositions)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Task)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WriteStamp)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="row">
+    <div class="col-md-12">
+        <a asp-page="Index" class="btn btn-default">Back to List</a>
+    </div>
+</div>
+

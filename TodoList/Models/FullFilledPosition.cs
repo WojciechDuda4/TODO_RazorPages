@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TodoList.Models
 {
-    public class ListPosition
+    public class FullFilledPosition
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }

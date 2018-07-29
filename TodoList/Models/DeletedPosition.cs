@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace TodoList.Models
 {
-    public class ListPosition
+    public class DeletedPosition
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         [Required]
         public string Task { get; set; }
-        public DateTime WriteStamp { get; set; }
+        public DateTime DeletionDate { get; set; }
     }
 }

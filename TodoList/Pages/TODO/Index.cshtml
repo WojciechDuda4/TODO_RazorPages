@@ -4,72 +4,80 @@
     ViewData["Title"] = "TODO List";
 }
 
-<h2>TODO List</h2>
-
-<div class="row">
-    <div class="col-md-12">
-        <form method="post">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label asp-for="listPosition.ID" class="control-label"></label>
-                        <input asp-for="listPosition.ID" class="form-control" />
-                        <span asp-validation-for="listPosition.ID" class="text-danger"></span>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h2 class="panel-title">Add list position</h2>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                <form method="post">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label asp-for="listPosition.Task" class="control-label"></label>
+                            <div class="input-group">
+                                <input asp-for="listPosition.Task" class="form-control" />
+                                <input type="submit" value="Create" class="btn btn-default" />
+                            </div>
+                            <span asp-validation-for="listPosition.Task" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <label asp-for="listPosition.Task" class="control-label"></label>
-                    <input asp-for="listPosition.Task" class="form-control" />
-                    <span asp-validation-for="listPosition.Task" class="text-danger"></span>
-                </div>
+                </form>
             </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <input type="submit" value="Create" class="btn btn-default" />
-                </div>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
-<form method="post">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.listPositions[0].ID)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.listPositions[0].Task)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.listPositions[0].WriteStamp)
-                </th>
-                <th>
-                    &nbsp;
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.listPositions)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ID)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Task)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.WriteStamp)
-                    </td>
-                    <td>
-                        <input type="submit" value="Delete" asp-page-handler="delete" asp-route-id="@item.ID" class="btn btn-danger" />
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</form>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Todo list</h3>
+    </div>
+    <div class="panel-body">
+        <form method="post">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.listPositions[0].Task)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.listPositions[0].WriteStamp)
+                        </th>
+                        <th>
+                            &nbsp;
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.listPositions)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Task)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.WriteStamp)
+                            </td>
+                            <td>
+                                <input type="submit" value="Delete" asp-page-handler="delete" asp-route-id="@item.ID" class="btn btn-danger btn-sm" />
+                                <input type="submit" value="Done" asp-page-handler="Add" asp-route-id="@item.ID" class="btn btn-success btn-sm" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </form>
+    </div>
+    <div class="panel-footer">
+        <div class="row">
+            <div class="col-md-12">
+                <a asp-page="Deleted" class="btn btn-default">Deleted List</a>
+                <a asp-page="FullFilled" class="btn btn-default">FullFilled List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

@@ -1,0 +1,42 @@
+﻿@page
+@model TodoList.Pages.TODO.DeletedModel
+@{
+    ViewData["Title"] = "Deleted";
+}
+
+<h2>Deleted positions</h2>
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.deletedPositions[0].Task)
+            </th>
+            <th>
+                @Html.DisplayFor(model => model.deletionDateHeader)
+            </th>
+            <th>
+                &nbsp;
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.deletedPositions)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Task)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DeletionDate)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="row">
+    <div class="col-md-12">
+        <a asp-page="Index" class="btn btn-default">Back to List</a>
+    </div>
+</div>
+

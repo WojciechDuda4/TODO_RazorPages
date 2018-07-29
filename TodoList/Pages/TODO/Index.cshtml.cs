@@ -22,7 +22,7 @@ namespace TodoList.Pages.TODO
         public ListPosition listPosition { get; set; }
         public async Task OnGetAsync()
         {
-            listPositions = await _context.ListPositions.ToListAsync();
+            listPositions = await _context.TODO.ToListAsync();
         }
         public async Task<IActionResult> OnPostAsync()
         {
@@ -32,7 +32,7 @@ namespace TodoList.Pages.TODO
             }
             listPosition.WriteStamp = DateTime.Now;
 
-            _context.ListPositions.Add(listPosition);
+            _context.TODO.Add(listPosition);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("Index");
@@ -45,18 +45,49 @@ namespace TodoList.Pages.TODO
             }
             try
             {
-                listPosition = await _context.ListPositions.FindAsync(ID);
+                listPosition = await _context.TODO.FindAsync(ID);
             }
             catch (Exception ex)
             {
-                
                 return Page();
             }
-            
+
+            DeletedPosition deletedPosition = new DeletedPosition();
+            deletedPosition.Task = listPosition.Task;
+            deletedPosition.DeletionDate = DateTime.Now;
 
             if (listPosition != null)
             {
-                _context.ListPositions.Remove(listPosition);
+                _context.TODO.Remove(listPosition);
+                await _context.SaveChangesAsync();
+                _context.Deleted.Add(deletedPosition);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToPage("Index");
+        }
+        public async Task<IActionResult> OnPostAddAsync(int? ID)
+        {
+            if (ID == null)
+            {
+                return Page();
+            }
+            try
+            {
+                listPosition = await _context.TODO.FindAsync(ID);
+            }
+            catch (Exception ex)
+            {
+                return Page();
+            }
+            FullFilledPosition fullFilledPosition = new FullFilledPosition();
+            fullFilledPosition.Task = listPosition.Task;
+            fullFilledPosition.WriteStamp = DateTime.Now;
+
+            if (listPosition != null)
+            {
+                _context.TODO.Remove(listPosition);
+                _context.FullFilled.Add(fullFilledPosition);
                 await _context.SaveChangesAsync();
             }
 

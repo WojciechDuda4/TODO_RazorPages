@@ -13,7 +13,8 @@ namespace TodoList.Data
         {
 
         }
-
-        public DbSet<ListPosition> ListPositions { get; set; }
+        public DbSet<ListPosition> TODO { get; set; }
+        public DbSet<FullFilledPosition> FullFilled { get; set; }
+        public DbSet<DeletedPosition> Deleted { get; set; }
     }
 }

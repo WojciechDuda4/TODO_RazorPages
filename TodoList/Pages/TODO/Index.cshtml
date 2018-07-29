@@ -1,0 +1,72 @@
+﻿@page
+@model TodoList.Pages.TODO.IndexModel
+@{
+    ViewData["Title"] = "TODO List";
+}
+
+<h2>TODO List</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <form method="post">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="listPosition.ID" class="control-label"></label>
+                        <input asp-for="listPosition.ID" class="form-control" />
+                        <span asp-validation-for="listPosition.ID" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="listPosition.Task" class="control-label"></label>
+                    <input asp-for="listPosition.Task" class="form-control" />
+                    <span asp-validation-for="listPosition.Task" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.listPositions[0].ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.listPositions[0].Task)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.listPositions[0].WriteStamp)
+            </th>
+            <th>
+                &nbsp;
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.listPositions)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Task)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WriteStamp)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

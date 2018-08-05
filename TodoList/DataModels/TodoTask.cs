@@ -7,10 +7,10 @@ namespace TodoList.DataModels
 {
     public class TodoTask
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public int Id { get; set; }
 
-        [Required]
+        
         public string Description { get; set; }
 
         public DateTime WriteStamp { get; set; }

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -23,9 +19,13 @@ namespace TodoList
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ListPositionContext>(opt => opt.UseInMemoryDatabase());
-            
-            services.AddMvc();
+            services.AddDbContext<TodoTaskContext>(opt => opt.UseInMemoryDatabase("dbName"));
+
+            services.AddMvc().AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AddPageRoute("/TODO/Index", "");
+                options.Conventions.AddPageRoute("/TODO/Index", "Index");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

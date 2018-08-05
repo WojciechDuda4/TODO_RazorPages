@@ -2,26 +2,43 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using TodoList.Data;
-using TodoList.Models;
+using TodoList.DataModels;
+using TodoList.Enums;
+using TodoList.ViewModels;
 
 namespace TodoList.Pages.TODO
 {
     public class DeletedModel : PageModel
     {
-        private readonly ListPositionContext _context;
-        public IList<DeletedPosition> deletedPositions { get; set; }
-        public string deletionDateHeader { get { return "Deletion Date"; } }
-        public DeletedModel(ListPositionContext context)
+        private readonly TodoTaskContext _context;
+
+        private ICollection<TodoTask> deletedTasks;
+
+        public ICollection<DeletedTaskView> deletedTasksView { get; set; }
+
+        public bool deletedTasksExist => (deletedTasksView.Count != 0);
+
+        public DeletedModel(TodoTaskContext context)
         {
             _context = context;
         }
+
         public async Task OnGetAsync()
         {
-            deletedPositions = await _context.Deleted.ToListAsync();
+            deletedTasks = await _context.TodoList
+                .Where(a => a.Status == TodoTaskStatus.Deleted)
+                .ToListAsync();
+
+            deletedTasksView = deletedTasks
+                .Select(a => new DeletedTaskView()
+                {
+                    Description = a.Description,
+                    DeletionStamp = DateTime.Now
+                })
+                .ToList();
         }
     }
 }

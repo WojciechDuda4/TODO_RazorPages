@@ -1,7 +1,7 @@
 ﻿@page
-@model TodoList.Pages.TODO.DeletedModel
+@model TodoList.Pages.TODO.CompletedModel
 @{
-    ViewData["Title"] = "Deleted tasks";
+    ViewData["Title"] = "Completed tasks";
 }
 
 <div class="panel panel-default">
@@ -11,7 +11,7 @@
         </h2>
     </div>
     <div class="panel-body">
-        @if (Model.deletedTasksExist)
+        @if (Model.completedTasksExist)
         {
             <table class="table table-bordered table-hover">
                 <thead class="thead-dark">
@@ -20,20 +20,20 @@
                             Description
                         </th>
                         <th>
-                            Deletion Date
+                            Completion date
                         </th>
                     </tr>
                 </thead>
                 <tbody>
 
-                    @foreach (var item in Model.deletedTasksView)
+                    @foreach (var item in Model.completedTasksView)
                     {
                         <tr>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Description)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.DeletionStamp)
+                                @Html.DisplayFor(modelItem => item.CompletionStamp)
                             </td>
                         </tr>
                     }
@@ -47,11 +47,12 @@
                 <tbody>
                     <tr>
                         <td>
-                            No deleted tasks yet!
+                            No completed tasks yet!
                         </td>
                     </tr>
                 </tbody>
             </table>
+
         }
     </div>
 </div>

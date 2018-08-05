@@ -6,92 +6,104 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using TodoList.Data;
-using TodoList.Models;
+using TodoList.DataModels;
+using TodoList.Enums;
+using TodoList.ViewModels;
 
 namespace TodoList.Pages.TODO
 {
     public class IndexModel : PageModel
     {
-        private readonly ListPositionContext _context;
-        public IndexModel(ListPositionContext context)
+        private readonly TodoTaskContext _context;
+
+        private ICollection<TodoTask> plannedTasks;
+
+        public IndexModel(TodoTaskContext context)
         {
             _context = context;
         }
-        public IList<ListPosition> listPositions { get; set; }
+
+        public ICollection<PlannedTaskView> plannedTasksView { get; set; }
+
+        public bool plannedTasksExist => (plannedTasksView.Count != 0);
+
         [BindProperty]
-        public ListPosition listPosition { get; set; }
+        public PlannedTaskView plannedTaskView { get; set; }
+
         public async Task OnGetAsync()
         {
-            listPositions = await _context.TODO.ToListAsync();
+            plannedTasks = await _context.TodoList
+                .Where(a => a.Status == TodoTaskStatus.Planned)
+                .ToListAsync();
+
+            plannedTasksView = plannedTasks
+                .Select(a => new PlannedTaskView()
+                {
+                    Id = a.Id,
+                    Description = a.Description,
+                    WriteStamp = a.WriteStamp
+                })
+                .ToList();
         }
+
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-            listPosition.WriteStamp = DateTime.Now;
+            TodoTask newTodoTask = new TodoTask
+            {
+                Description = plannedTaskView.Description,
+                WriteStamp = DateTime.Now,
+                Status = TodoTaskStatus.Planned
+            };
 
-            _context.TODO.Add(listPosition);
+            _context.TodoList.Add(newTodoTask);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("Index");
         }
-        public async Task<IActionResult> OnPostDeleteAsync(int? ID)
+
+        public async Task<IActionResult> OnPostDeleteAsync(int? id)
         {
-            if (ID == null)
-            {
-                return Page();
-            }
-            try
-            {
-                listPosition = await _context.TODO.FindAsync(ID);
-            }
-            catch (Exception ex)
+            if (id == null)
             {
                 return Page();
             }
 
-            DeletedPosition deletedPosition = new DeletedPosition();
-            deletedPosition.Task = listPosition.Task;
-            deletedPosition.DeletionDate = DateTime.Now;
+            TodoTask taskToDelete = await _context.TodoList.FindAsync(id);
 
-            if (listPosition != null)
+            if (taskToDelete != null)
             {
-                _context.TODO.Remove(listPosition);
-                await _context.SaveChangesAsync();
-                _context.Deleted.Add(deletedPosition);
+                taskToDelete.DeletionStamp = DateTime.Now;
+                taskToDelete.Status = TodoTaskStatus.Deleted;
+                _context.TodoList.Update(taskToDelete);
                 await _context.SaveChangesAsync();
             }
 
             return RedirectToPage("Index");
         }
-        public async Task<IActionResult> OnPostAddAsync(int? ID)
-        {
-            if (ID == null)
-            {
-                return Page();
-            }
-            try
-            {
-                listPosition = await _context.TODO.FindAsync(ID);
-            }
-            catch (Exception ex)
-            {
-                return Page();
-            }
-            FullFilledPosition fullFilledPosition = new FullFilledPosition();
-            fullFilledPosition.Task = listPosition.Task;
-            fullFilledPosition.WriteStamp = DateTime.Now;
 
-            if (listPosition != null)
+        public async Task<IActionResult> OnPostAddAsync(int? id)
+        {
+            if (id == null)
             {
-                _context.TODO.Remove(listPosition);
-                _context.FullFilled.Add(fullFilledPosition);
+                return Page();
+            }
+
+            TodoTask completedTask = await _context.TodoList.FindAsync(id);
+
+            if (completedTask != null)
+            {
+                completedTask.CompletionStamp = DateTime.Now;
+                completedTask.Status = TodoTaskStatus.Completed;
+                _context.TodoList.Update(completedTask);
                 await _context.SaveChangesAsync();
             }
 
             return RedirectToPage("Index");
         }
+
     }
 }

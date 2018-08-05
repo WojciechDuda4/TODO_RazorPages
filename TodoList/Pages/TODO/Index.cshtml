@@ -14,12 +14,11 @@
                 <form method="post">
                     <div class="row">
                         <div class="col-md-4">
-                            <label asp-for="listPosition.Task" class="control-label"></label>
-                            <div class="input-group">
-                                <input asp-for="listPosition.Task" class="form-control" />
-                                <input type="submit" value="Create" class="btn btn-default" />
-                            </div>
-                            <span asp-validation-for="listPosition.Task" class="text-danger"></span>
+                                <input asp-for="plannedTaskView.Description" class="form-control" />
+                                <span asp-validation-for="plannedTaskView.Description" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="submit" value="Create" class="btn btn-default" />
                         </div>
                     </div>
                 </form>
@@ -33,45 +32,62 @@
     </div>
     <div class="panel-body">
         <form method="post">
-            <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.listPositions[0].Task)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.listPositions[0].WriteStamp)
-                        </th>
-                        <th>
-                            &nbsp;
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.listPositions)
-                    {
+            @if (Model.plannedTasksExist)
+            {
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                                Decription
+                            </th>
+                            <th>
+                                Addition date
+                            </th>
+                            <th>
+                                &nbsp;
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in Model.plannedTasksView)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.WriteStamp)
+                                </td>
+                                <td>
+                                    <input type="submit" value="Done" asp-page-handler="Add" asp-route-id="@item.Id" class="btn btn-success btn-sm" />
+                                    <input type="submit" value="Delete" asp-page-handler="delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm" />
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <table>
+                    <tbody>
                         <tr>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Task)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.WriteStamp)
-                            </td>
-                            <td>
-                                <input type="submit" value="Delete" asp-page-handler="delete" asp-route-id="@item.ID" class="btn btn-danger btn-sm" />
-                                <input type="submit" value="Done" asp-page-handler="Add" asp-route-id="@item.ID" class="btn btn-success btn-sm" />
+                                No planned tasks yet!
                             </td>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            }
         </form>
     </div>
     <div class="panel-footer">
         <div class="row">
             <div class="col-md-12">
-                <a asp-page="Deleted" class="btn btn-default">Deleted List</a>
-                <a asp-page="FullFilled" class="btn btn-default">FullFilled List</a>
+                <a asp-page="Deleted" class="btn btn-default">Deleted tasks</a>
+                <a asp-page="Completed" class="btn btn-default">Completed tasks</a>
             </div>
         </div>
     </div>

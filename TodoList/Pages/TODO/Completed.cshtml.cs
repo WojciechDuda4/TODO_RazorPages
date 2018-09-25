@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using TodoList.Data;
 using TodoList.DataModels;
@@ -12,33 +13,50 @@ namespace TodoList.Pages.TODO
 {
     public class CompletedModel : PageModel
     {
-        private readonly TodoTaskContext _context;
+        private readonly TodoTaskDbContext _context;
 
-        private ICollection<TodoTask> completedTasks;
+        private ICollection<TodoTask> _completedTasks;
 
-        public CompletedModel(TodoTaskContext context)
+        public ViewDataDictionary PartialViewStaticContent
+        {
+            get
+            {
+                return new ViewDataDictionary(ViewData);
+            }
+        }
+
+        public CompletedModel(TodoTaskDbContext context)
         {
             _context = context;
         }
 
-        public ICollection<CompletedTaskView> completedTasksView { get; set; }
+        public ICollection<CompletedTaskViewModel> CompletedTasks { get; set; }
 
-        public bool completedTasksExist => (completedTasksView.Count != 0);
+        public bool CompletedTasksExist => (CompletedTasks.Count != 0);
 
         public async Task OnGetAsync()
         {
-            completedTasks = await _context.TodoList
+            SetViewData();
+
+            _completedTasks = await _context.TodoList
                 .Where(a => a.Status == TodoTaskStatus.Completed)
                 .ToListAsync();
 
-            completedTasksView = completedTasks
-                .Select(a => new CompletedTaskView()
+            CompletedTasks = _completedTasks
+                .Select(a => new CompletedTaskViewModel()
                 {
                     Description = a.Description,
-                    CompletionStamp = a.CompletionStamp
+                    WriteStamp = a.CompletionStamp
                 })
                 .ToList();
         }
 
+        void SetViewData()
+        {
+            ViewData["Title"] = "Completed tasks";
+            ViewData["DescriptionColumnTitle"] = "Description";
+            ViewData["DateColumnTitle"] = "Completion Date";
+            ViewData["EmptyTableLabel"] = "No tasks completed";
+        }
     }
 }

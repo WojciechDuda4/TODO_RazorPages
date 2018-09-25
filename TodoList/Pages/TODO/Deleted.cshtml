@@ -1,65 +1,7 @@
 ﻿@page
 @model TodoList.Pages.TODO.DeletedModel
-@{
-    ViewData["Title"] = "Deleted tasks";
-}
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h2 class="panel-title">
-            Completed tasks
-        </h2>
-    </div>
-    <div class="panel-body">
-        @if (Model.deletedTasksExist)
-        {
-            <table class="table table-bordered table-hover">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>
-                            Description
-                        </th>
-                        <th>
-                            Deletion Date
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    @foreach (var item in Model.deletedTasksView)
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Description)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.DeletionStamp)
-                            </td>
-                        </tr>
-                    }
-
-                </tbody>
-            </table>
-        }
-        else
-        {
-            <table>
-                <tbody>
-                    <tr>
-                        <td>
-                            No deleted tasks yet!
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        }
-    </div>
-</div>
+@Html.Partial("_ArchiveTasksPartialView", Model.DeletedTasks, Model.PartialViewStaticContent)
 
 
-<div class="row">
-    <div class="col-md-12">
-        <a asp-page="Index" class="btn btn-default">Back to Main Page</a>
-    </div>
-</div>
 

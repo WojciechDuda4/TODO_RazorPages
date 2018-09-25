@@ -19,7 +19,7 @@ namespace TodoList
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<TodoTaskContext>(opt => opt.UseInMemoryDatabase("dbName"));
+            services.AddDbContext<TodoTaskDbContext>(opt => opt.UseInMemoryDatabase("dbName"));
 
             services.AddMvc().AddRazorPagesOptions(options =>
             {

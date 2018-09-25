@@ -14,30 +14,30 @@ namespace TodoList.Pages.TODO
 {
     public class IndexModel : PageModel
     {
-        private readonly TodoTaskContext _context;
+        private readonly TodoTaskDbContext _context;
 
-        private ICollection<TodoTask> plannedTasks;
+        private ICollection<TodoTask> _plannedTasks;
 
-        public IndexModel(TodoTaskContext context)
+        public IndexModel(TodoTaskDbContext context)
         {
             _context = context;
         }
 
-        public ICollection<PlannedTaskView> plannedTasksView { get; set; }
+        public ICollection<PlannedTaskViewModel> PlannedTasks { get; set; }
 
-        public bool plannedTasksExist => (plannedTasksView.Count != 0);
+        public bool PlannedTasksExist => (PlannedTasks.Count != 0);
 
         [BindProperty]
-        public PlannedTaskView plannedTaskView { get; set; }
+        public PlannedTaskViewModel PlannedTask { get; set; }
 
         public async Task OnGetAsync()
         {
-            plannedTasks = await _context.TodoList
+            _plannedTasks = await _context.TodoList
                 .Where(a => a.Status == TodoTaskStatus.Planned)
                 .ToListAsync();
 
-            plannedTasksView = plannedTasks
-                .Select(a => new PlannedTaskView()
+            PlannedTasks = _plannedTasks
+                .Select(a => new PlannedTaskViewModel()
                 {
                     Id = a.Id,
                     Description = a.Description,
@@ -54,7 +54,7 @@ namespace TodoList.Pages.TODO
             }
             TodoTask newTodoTask = new TodoTask
             {
-                Description = plannedTaskView.Description,
+                Description = PlannedTask.Description,
                 WriteStamp = DateTime.Now,
                 Status = TodoTaskStatus.Planned
             };
@@ -104,6 +104,5 @@ namespace TodoList.Pages.TODO
 
             return RedirectToPage("Index");
         }
-
     }
 }

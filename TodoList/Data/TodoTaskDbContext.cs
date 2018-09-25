@@ -3,9 +3,9 @@ using TodoList.DataModels;
 
 namespace TodoList.Data
 {
-    public class TodoTaskContext : DbContext
+    public class TodoTaskDbContext : DbContext
     {
-        public TodoTaskContext(DbContextOptions<TodoTaskContext> options) : base(options)
+        public TodoTaskDbContext(DbContextOptions<TodoTaskDbContext> options) : base(options)
         {
 
         }

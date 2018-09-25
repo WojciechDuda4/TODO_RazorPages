@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using TodoList.Data;
 using TodoList.DataModels;
@@ -13,32 +14,50 @@ namespace TodoList.Pages.TODO
 {
     public class DeletedModel : PageModel
     {
-        private readonly TodoTaskContext _context;
+        private readonly TodoTaskDbContext _context;
 
-        private ICollection<TodoTask> deletedTasks;
+        private ICollection<TodoTask> _deletedTasks;
 
-        public ICollection<DeletedTaskView> deletedTasksView { get; set; }
+        public ViewDataDictionary PartialViewStaticContent
+        {
+            get
+            {
+                return new ViewDataDictionary(ViewData);
+            }
+        }
 
-        public bool deletedTasksExist => (deletedTasksView.Count != 0);
+        public ICollection<DeletedTaskViewModel> DeletedTasks { get; set; }
 
-        public DeletedModel(TodoTaskContext context)
+        public bool DeletedTasksExist => (DeletedTasks.Count != 0);
+
+        public DeletedModel(TodoTaskDbContext context)
         {
             _context = context;
         }
 
         public async Task OnGetAsync()
         {
-            deletedTasks = await _context.TodoList
+            SetViewData();
+
+            _deletedTasks = await _context.TodoList
                 .Where(a => a.Status == TodoTaskStatus.Deleted)
                 .ToListAsync();
 
-            deletedTasksView = deletedTasks
-                .Select(a => new DeletedTaskView()
+            DeletedTasks = _deletedTasks
+                .Select(a => new DeletedTaskViewModel()
                 {
                     Description = a.Description,
-                    DeletionStamp = DateTime.Now
+                    WriteStamp = DateTime.Now
                 })
                 .ToList();
+        }
+
+        void SetViewData()
+        {
+            ViewData["Title"] = "Deleted tasks";
+            ViewData["DescriptionColumnTitle"] = "Description";
+            ViewData["DateColumnTitle"] = "Deletion Date";
+            ViewData["EmptyTableLabel"] = "No tasks deleted";
         }
     }
 }

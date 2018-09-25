@@ -9,7 +9,6 @@ namespace TodoList.DataModels
     {
         [Key]
         public int Id { get; set; }
-
         
         public string Description { get; set; }
 
@@ -20,6 +19,5 @@ namespace TodoList.DataModels
         public DateTime CompletionStamp { get; set; }
 
         public TodoTaskStatus Status { get;set; }
-
     }
 }

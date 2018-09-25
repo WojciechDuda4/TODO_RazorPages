@@ -1,0 +1,57 @@
+﻿@using TodoList.ViewModels;
+@model IEnumerable<IArchiveViewModel>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">
+            @ViewData["Title"]
+        </h3>
+    </div>
+    <div class="panel-body">
+        @if (Model.Any())
+        {
+            <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>
+                            @ViewData["DescriptionColumnTitle"]
+                        </th>
+                        <th>
+                            @ViewData["DateColumnTitle"]
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.WriteStamp)
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            @ViewData["EmptyTableLabel"]
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+@{
+}

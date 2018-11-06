@@ -54,10 +54,10 @@
                         {
                             <tr>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Description)
+                                    <label>@item.Description</label>
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.WriteStamp)
+                                    <label>@item.WriteStamp</label>
                                 </td>
                                 <td>
                                     <input type="submit" value="Done" asp-page-handler="Add" asp-route-id="@item.Id" class="btn btn-success btn-sm" />

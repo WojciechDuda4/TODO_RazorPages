@@ -4,37 +4,35 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using TodoList.Data;
 using TodoList.DataModels;
 using TodoList.Enums;
+using TodoList.Repositories;
 using TodoList.ViewModels;
 
 namespace TodoList.Pages.TODO
 {
     public class IndexModel : PageModel
     {
-        private readonly TodoTaskDbContext _context;
+        private IUnitOfWork _unitOfWork;
 
-        private ICollection<TodoTask> _plannedTasks;
+        private IEnumerable<TodoTask> _plannedTasks;
 
         public IndexModel(TodoTaskDbContext context)
         {
-            _context = context;
+            _unitOfWork = new UnitOfWork(context);
         }
 
-        public ICollection<PlannedTaskViewModel> PlannedTasks { get; set; }
+        public IEnumerable<PlannedTaskViewModel> PlannedTasks { get; set; }
 
-        public bool PlannedTasksExist => (PlannedTasks.Count != 0);
+        public bool PlannedTasksExist => (PlannedTasks.Any());
 
         [BindProperty]
         public PlannedTaskViewModel PlannedTask { get; set; }
 
         public async Task OnGetAsync()
         {
-            _plannedTasks = await _context.TodoList
-                .Where(a => a.Status == TodoTaskStatus.Planned)
-                .ToListAsync();
+            _plannedTasks = await _unitOfWork.TodoTaskRepository.GetTasksByStatusAsync(TodoTaskStatus.Planned);
 
             PlannedTasks = _plannedTasks
                 .Select(a => new PlannedTaskViewModel()
@@ -59,8 +57,8 @@ namespace TodoList.Pages.TODO
                 Status = TodoTaskStatus.Planned
             };
 
-            _context.TodoList.Add(newTodoTask);
-            await _context.SaveChangesAsync();
+            _unitOfWork.TodoTaskRepository.Add(newTodoTask);
+            await _unitOfWork.Complete();
 
             return RedirectToPage("Index");
         }
@@ -72,14 +70,14 @@ namespace TodoList.Pages.TODO
                 return Page();
             }
 
-            TodoTask taskToDelete = await _context.TodoList.FindAsync(id);
+            TodoTask taskToDelete = await _unitOfWork.TodoTaskRepository.Get(Convert.ToInt32(id));
 
             if (taskToDelete != null)
             {
                 taskToDelete.DeletionStamp = DateTime.Now;
                 taskToDelete.Status = TodoTaskStatus.Deleted;
-                _context.TodoList.Update(taskToDelete);
-                await _context.SaveChangesAsync();
+                _unitOfWork.Update(taskToDelete);
+                await _unitOfWork.Complete();
             }
 
             return RedirectToPage("Index");
@@ -92,14 +90,14 @@ namespace TodoList.Pages.TODO
                 return Page();
             }
 
-            TodoTask completedTask = await _context.TodoList.FindAsync(id);
+            TodoTask completedTask = await _unitOfWork.TodoTaskRepository.Get(Convert.ToInt32(id));
 
             if (completedTask != null)
             {
                 completedTask.CompletionStamp = DateTime.Now;
                 completedTask.Status = TodoTaskStatus.Completed;
-                _context.TodoList.Update(completedTask);
-                await _context.SaveChangesAsync();
+                _unitOfWork.Update(completedTask);
+                await _unitOfWork.Complete();
             }
 
             return RedirectToPage("Index");

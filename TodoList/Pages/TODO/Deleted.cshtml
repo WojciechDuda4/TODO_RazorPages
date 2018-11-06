@@ -1,7 +1,7 @@
 ﻿@page
 @model TodoList.Pages.TODO.DeletedModel
 
-@Html.Partial("_ArchiveTasksPartialView", Model.DeletedTasks, Model.PartialViewStaticContent)
+<partial name="_ArchiveTasksPartialView.cshtml" for="DeletedTasks" view-data="Model.PartialViewStaticContent" />
 
 
 

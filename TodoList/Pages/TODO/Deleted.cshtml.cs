@@ -4,17 +4,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.EntityFrameworkCore;
 using TodoList.Data;
 using TodoList.DataModels;
 using TodoList.Enums;
+using TodoList.Repositories;
 using TodoList.ViewModels;
 
 namespace TodoList.Pages.TODO
 {
     public class DeletedModel : PageModel
     {
-        private readonly TodoTaskDbContext _context;
+        private IUnitOfWork _unitOfWork;
 
         private ICollection<TodoTask> _deletedTasks;
 
@@ -32,16 +32,14 @@ namespace TodoList.Pages.TODO
 
         public DeletedModel(TodoTaskDbContext context)
         {
-            _context = context;
+            _unitOfWork = new UnitOfWork(context);
         }
 
         public async Task OnGetAsync()
         {
             SetViewData();
 
-            _deletedTasks = await _context.TodoList
-                .Where(a => a.Status == TodoTaskStatus.Deleted)
-                .ToListAsync();
+            _deletedTasks = await _unitOfWork.TodoTaskRepository.GetTasksByStatusAsync(TodoTaskStatus.Deleted);
 
             DeletedTasks = _deletedTasks
                 .Select(a => new DeletedTaskViewModel()

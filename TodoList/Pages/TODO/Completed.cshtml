@@ -1,5 +1,5 @@
 ﻿@page
 @model TodoList.Pages.TODO.CompletedModel
 
-@Html.Partial("_ArchiveTasksPartialView", Model.CompletedTasks, Model.PartialViewStaticContent)
+<partial name="_ArchiveTasksPartialView.cshtml" for="CompletedTasks" view-data="Model.PartialViewStaticContent" />
 

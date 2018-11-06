@@ -3,17 +3,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.EntityFrameworkCore;
 using TodoList.Data;
 using TodoList.DataModels;
 using TodoList.Enums;
+using TodoList.Repositories;
 using TodoList.ViewModels;
 
 namespace TodoList.Pages.TODO
 {
     public class CompletedModel : PageModel
     {
-        private readonly TodoTaskDbContext _context;
+        private IUnitOfWork _unitOfWork;
 
         private ICollection<TodoTask> _completedTasks;
 
@@ -27,7 +27,7 @@ namespace TodoList.Pages.TODO
 
         public CompletedModel(TodoTaskDbContext context)
         {
-            _context = context;
+            _unitOfWork = new UnitOfWork(context);
         }
 
         public ICollection<CompletedTaskViewModel> CompletedTasks { get; set; }
@@ -38,9 +38,7 @@ namespace TodoList.Pages.TODO
         {
             SetViewData();
 
-            _completedTasks = await _context.TodoList
-                .Where(a => a.Status == TodoTaskStatus.Completed)
-                .ToListAsync();
+            _completedTasks = await _unitOfWork.TodoTaskRepository.GetTasksByStatusAsync(TodoTaskStatus.Completed);
 
             CompletedTasks = _completedTasks
                 .Select(a => new CompletedTaskViewModel()

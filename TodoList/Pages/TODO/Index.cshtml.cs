@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using TodoList.Data;
 using TodoList.DataModels;
 using TodoList.Enums;
 using TodoList.Repositories;
@@ -18,9 +17,9 @@ namespace TodoList.Pages.TODO
 
         private IEnumerable<TodoTask> _plannedTasks;
 
-        public IndexModel(TodoTaskDbContext context)
+        public IndexModel(IUnitOfWork unitOfWork)
         {
-            _unitOfWork = new UnitOfWork(context);
+            _unitOfWork = unitOfWork;
         }
 
         public IEnumerable<PlannedTaskViewModel> PlannedTasks { get; set; }

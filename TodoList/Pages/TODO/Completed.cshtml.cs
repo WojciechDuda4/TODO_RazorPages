@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using TodoList.Data;
 using TodoList.DataModels;
 using TodoList.Enums;
 using TodoList.Repositories;
@@ -25,9 +24,9 @@ namespace TodoList.Pages.TODO
             }
         }
 
-        public CompletedModel(TodoTaskDbContext context)
+        public CompletedModel(IUnitOfWork unitOfWork)
         {
-            _unitOfWork = new UnitOfWork(context);
+            _unitOfWork = unitOfWork;
         }
 
         public ICollection<CompletedTaskViewModel> CompletedTasks { get; set; }

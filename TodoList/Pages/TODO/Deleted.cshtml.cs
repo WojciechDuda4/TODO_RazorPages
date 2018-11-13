@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using TodoList.Data;
 using TodoList.DataModels;
 using TodoList.Enums;
 using TodoList.Repositories;
@@ -30,9 +29,9 @@ namespace TodoList.Pages.TODO
 
         public bool DeletedTasksExist => (DeletedTasks.Count != 0);
 
-        public DeletedModel(TodoTaskDbContext context)
+        public DeletedModel(IUnitOfWork unitOfWork)
         {
-            _unitOfWork = new UnitOfWork(context);
+            _unitOfWork = unitOfWork;
         }
 
         public async Task OnGetAsync()

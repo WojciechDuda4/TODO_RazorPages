@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TodoList.Data;
+using TodoList.Repositories;
 
 namespace TodoList
 {
@@ -19,8 +20,8 @@ namespace TodoList
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddDbContext<TodoTaskDbContext>(opt => opt.UseInMemoryDatabase("dbName"));
             services.AddDbContext<TodoTaskDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("TodoDatabase")));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddMvc().AddRazorPagesOptions(options =>
             {

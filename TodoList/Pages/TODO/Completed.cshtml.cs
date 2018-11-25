@@ -1,23 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Localization;
 using TodoList.DataModels;
-using TodoList.Enums;
-using TodoList.Repositories;
+using TodoList.Helpers;
 using TodoList.ViewModels;
 
 namespace TodoList.Pages.TODO
 {
     public class CompletedModel : PageModel
     {
-        private IUnitOfWork _unitOfWork;
-
         IStringLocalizer<CompletedModel> _stringLocalizer;
 
         private ICollection<TodoTask> _completedTasks;
+
+        private ApiHelper _apiHelper;
 
         public ViewDataDictionary PartialViewStaticContent
         {
@@ -27,10 +27,10 @@ namespace TodoList.Pages.TODO
             }
         }
 
-        public CompletedModel(IUnitOfWork unitOfWork, IStringLocalizer<CompletedModel> stringLocalizer)
+        public CompletedModel(IStringLocalizer<CompletedModel> stringLocalizer, ApiHelper apiHelper)
         {
-            _unitOfWork = unitOfWork;
             _stringLocalizer = stringLocalizer;
+            _apiHelper = apiHelper;
         }
 
         public ICollection<CompletedTaskViewModel> CompletedTasks { get; set; }
@@ -39,9 +39,17 @@ namespace TodoList.Pages.TODO
 
         public async Task OnGetAsync()
         {
+            string url = "https://localhost:44349/api/TodoList?todoTaskStatus=Completed";
+
             SetViewData();
 
-            _completedTasks = await _unitOfWork.TodoTaskRepository.GetTasksByStatusAsync(TodoTaskStatus.Completed);
+            using (HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync(url))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    _completedTasks = await response.Content.ReadAsAsync<ICollection<TodoTask>>();
+                }
+            }
 
             CompletedTasks = _completedTasks
                 .Select(a => new CompletedTaskViewModel()

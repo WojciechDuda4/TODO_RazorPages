@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Localization;
 using TodoList.DataModels;
-using TodoList.Enums;
-using TodoList.Repositories;
+using TodoList.Helpers;
 using TodoList.ViewModels;
 
 namespace TodoList.Pages.TODO
@@ -16,9 +15,9 @@ namespace TodoList.Pages.TODO
     {
         private IStringLocalizer<DeletedModel> _stringLocalizer;
 
-        private IUnitOfWork _unitOfWork;
-
         private ICollection<TodoTask> _deletedTasks;
+
+        private ApiHelper _apiHelper;
 
         public ViewDataDictionary PartialViewStaticContent
         {
@@ -32,23 +31,31 @@ namespace TodoList.Pages.TODO
 
         public bool DeletedTasksExist => (DeletedTasks.Count != 0);
 
-        public DeletedModel(IUnitOfWork unitOfWork, IStringLocalizer<DeletedModel> stringLocalizer)
+        public DeletedModel(IStringLocalizer<DeletedModel> stringLocalizer, ApiHelper apiHelper)
         {
-            _unitOfWork = unitOfWork;
             _stringLocalizer = stringLocalizer;
+            _apiHelper = apiHelper;
         }
 
         public async Task OnGetAsync()
         {
-            SetViewData();
+            string url = "https://localhost:44349/api/TodoList?todoTaskStatus=Deleted";
 
-            _deletedTasks = await _unitOfWork.TodoTaskRepository.GetTasksByStatusAsync(TodoTaskStatus.Deleted);
+           SetViewData();
+
+            using (HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync(url))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    _deletedTasks = await response.Content.ReadAsAsync<ICollection<TodoTask>>();
+                }
+            }
 
             DeletedTasks = _deletedTasks
                 .Select(a => new DeletedTaskViewModel()
                 {
                     Description = a.Description,
-                    WriteStamp = a.DeletionStamp
+                    WriteStamp = a.WriteStamp
                 })
                 .ToList();
         }

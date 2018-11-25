@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Localization;
 using TodoList.DataModels;
 using TodoList.Enums;
 using TodoList.Repositories;
@@ -13,6 +14,8 @@ namespace TodoList.Pages.TODO
 {
     public class DeletedModel : PageModel
     {
+        private IStringLocalizer<DeletedModel> _stringLocalizer;
+
         private IUnitOfWork _unitOfWork;
 
         private ICollection<TodoTask> _deletedTasks;
@@ -29,9 +32,10 @@ namespace TodoList.Pages.TODO
 
         public bool DeletedTasksExist => (DeletedTasks.Count != 0);
 
-        public DeletedModel(IUnitOfWork unitOfWork)
+        public DeletedModel(IUnitOfWork unitOfWork, IStringLocalizer<DeletedModel> stringLocalizer)
         {
             _unitOfWork = unitOfWork;
+            _stringLocalizer = stringLocalizer;
         }
 
         public async Task OnGetAsync()
@@ -44,17 +48,17 @@ namespace TodoList.Pages.TODO
                 .Select(a => new DeletedTaskViewModel()
                 {
                     Description = a.Description,
-                    WriteStamp = DateTime.Now
+                    WriteStamp = a.DeletionStamp
                 })
                 .ToList();
         }
 
         void SetViewData()
         {
-            ViewData["Title"] = "Deleted tasks";
-            ViewData["DescriptionColumnTitle"] = "Description";
-            ViewData["DateColumnTitle"] = "Deletion Date";
-            ViewData["EmptyTableLabel"] = "No tasks deleted";
+            ViewData["Title"] = _stringLocalizer["Title"];
+            ViewData["DescriptionColumnTitle"] = _stringLocalizer["DescriptionColumnTitle"];
+            ViewData["DateColumnTitle"] = _stringLocalizer["DateColumnTitle"];
+            ViewData["EmptyTableLabel"] = _stringLocalizer["EmptyTableLabel"];
         }
     }
 }

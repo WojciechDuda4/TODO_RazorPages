@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using TodoList.DataModels;
 using TodoList.Enums;
 using TodoList.Repositories;
@@ -15,11 +16,14 @@ namespace TodoList.Pages.TODO
     {
         private IUnitOfWork _unitOfWork;
 
+        IStringLocalizer<IndexModel> _stringLocalizer;
+
         private IEnumerable<TodoTask> _plannedTasks;
 
-        public IndexModel(IUnitOfWork unitOfWork)
+        public IndexModel(IUnitOfWork unitOfWork, IStringLocalizer<IndexModel> stringLocalizer)
         {
             _unitOfWork = unitOfWork;
+            _stringLocalizer = stringLocalizer;
         }
 
         public IEnumerable<PlannedTaskViewModel> PlannedTasks { get; set; }

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Localization;
 using TodoList.DataModels;
 using TodoList.Enums;
 using TodoList.Repositories;
@@ -14,6 +15,8 @@ namespace TodoList.Pages.TODO
     {
         private IUnitOfWork _unitOfWork;
 
+        IStringLocalizer<CompletedModel> _stringLocalizer;
+
         private ICollection<TodoTask> _completedTasks;
 
         public ViewDataDictionary PartialViewStaticContent
@@ -24,9 +27,10 @@ namespace TodoList.Pages.TODO
             }
         }
 
-        public CompletedModel(IUnitOfWork unitOfWork)
+        public CompletedModel(IUnitOfWork unitOfWork, IStringLocalizer<CompletedModel> stringLocalizer)
         {
             _unitOfWork = unitOfWork;
+            _stringLocalizer = stringLocalizer;
         }
 
         public ICollection<CompletedTaskViewModel> CompletedTasks { get; set; }
@@ -50,10 +54,10 @@ namespace TodoList.Pages.TODO
 
         void SetViewData()
         {
-            ViewData["Title"] = "Completed tasks";
-            ViewData["DescriptionColumnTitle"] = "Description";
-            ViewData["DateColumnTitle"] = "Completion Date";
-            ViewData["EmptyTableLabel"] = "No tasks completed";
+            ViewData["Title"] = _stringLocalizer["Title"];
+            ViewData["DescriptionColumnTitle"] = _stringLocalizer["DescriptionColumnTitle"];
+            ViewData["DateColumnTitle"] = _stringLocalizer["DateColumnTitle"];
+            ViewData["EmptyTableLabel"] = _stringLocalizer["EmptyTableLabel"];
         }
     }
 }

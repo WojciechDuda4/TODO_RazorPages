@@ -3,10 +3,12 @@
 @{
     ViewData["Title"] = "TODO List";
 }
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 <div class="card">
     <div class="card-header">
-        <h4 class="card-title">Add list position</h4>
+        <h4 class="card-title">@Localizer["Title"]</h4>
     </div>
     <div class="card-body">
         <div class="row">
@@ -28,7 +30,7 @@
 </div>
 <div class="card">
     <div class="card-header">
-        <h4 class="card-title">Todo list</h4>
+        <h4 class="card-title">@Localizer["TableTitle"]</h4>
     </div>
     <div class="card-body">
         <form method="post">
@@ -38,10 +40,10 @@
                     <thead class="thead-dark">
                         <tr>
                             <th class="w-45">
-                                Decription
+                                @Localizer["DescriptionColumnTitle"]
                             </th>
                             <th class="w-40">
-                                Addition date
+                                @Localizer["DateColumnTitle"]
                             </th>
                             <th class="w-15">
                                 &nbsp;
@@ -75,7 +77,7 @@
                     <tbody>
                         <tr>
                             <td>
-                                No planned tasks yet!
+                                @Localizer["EmptyTableRow"]
                             </td>
                         </tr>
                     </tbody>

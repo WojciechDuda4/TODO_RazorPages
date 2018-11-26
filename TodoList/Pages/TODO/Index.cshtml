@@ -1,0 +1,94 @@
+﻿@page
+@model TodoList.Pages.TODO.IndexModel
+@{
+    ViewData["Title"] = "TODO List";
+}
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">@Localizer["Title"]</h4>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <form method="post">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <input asp-for="PlannedTask.Description" class="form-control" />
+                            <span asp-validation-for="PlannedTask.Description" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="submit" value="Create" class="btn btn-success" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">@Localizer["TableTitle"]</h4>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            @if (Model.PlannedTasksExist)
+            {
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th class="w-45">
+                                @Localizer["DescriptionColumnTitle"]
+                            </th>
+                            <th class="w-40">
+                                @Localizer["DateColumnTitle"]
+                            </th>
+                            <th class="w-15">
+                                &nbsp;
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in Model.PlannedTasks)
+                        {
+                            <tr>
+                                <td>
+                                    <label>@item.Description</label>
+                                </td>
+                                <td>
+                                    <label>@item.WriteStamp</label>
+                                </td>
+                                <td>
+                                    <input type="submit" value="Done" asp-page-handler="Add" asp-route-id="@item.Id" class="btn btn-success btn-sm" />
+                                    <input type="submit" value="Delete" asp-page-handler="delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm" />
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>
+                                @Localizer["EmptyTableRow"]
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

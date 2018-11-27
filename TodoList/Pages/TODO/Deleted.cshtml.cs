@@ -39,7 +39,7 @@ namespace TodoList.Pages.TODO
 
         public async Task OnGetAsync()
         {
-            string url = "https://localhost:44349/api/TodoList?todoTaskStatus=Deleted";
+            string url = "api/TodoTasks?todoTaskStatus=Deleted";
 
            SetViewData();
 

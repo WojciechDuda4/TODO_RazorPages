@@ -31,12 +31,17 @@ namespace TodoList.Pages.TODO
 
         public bool PlannedTasksExist => (PlannedTasks.Any());
 
+        [TempData]
+        public string Message { get; set; }
+
+        public bool ShowMessage => !string.IsNullOrEmpty(Message);
+
         [BindProperty]
         public PlannedTaskViewModel PlannedTask { get; set; }
 
         public async Task OnGetAsync()
         {
-            string url = "https://localhost:44349/api/TodoList?todoTaskStatus=Planned";
+            string url = "api/TodoTasks?todoTaskStatus=Planned";
 
             using (HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync(url))
             {
@@ -58,7 +63,7 @@ namespace TodoList.Pages.TODO
 
         public async Task<IActionResult> OnPostAsync()
         {
-            string url = "https://localhost:44349/api/TodoList";
+            string url = "api/TodoTasks";
 
             if (!ModelState.IsValid)
             {
@@ -72,11 +77,15 @@ namespace TodoList.Pages.TODO
                 Status = TodoTaskStatus.Planned
             };
 
-            using (HttpResponseMessage response = await _apiHelper.ApiClient.PostAsJsonAsync<TodoTask>(url, newTodoTask))
+            using (HttpResponseMessage response = await _apiHelper.ApiClient.PostAsJsonAsync(url, newTodoTask))
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    // WTF?
+                    Message = _stringLocalizer["TaskCreatedMessage"];
+                }
+                else
+                {
+                    Message = _stringLocalizer["TaskCreatingErrorMessage"];
                 }
             }
 
@@ -85,7 +94,7 @@ namespace TodoList.Pages.TODO
 
         public async Task<IActionResult> OnPostDeleteAsync(int? id)
         {
-            string url = $"https://localhost:44349/api/TodoList/{id}";
+            string url = $"api/TodoTasks/{id}";
 
             if (id == null)
             {
@@ -104,7 +113,7 @@ namespace TodoList.Pages.TODO
 
             if (taskToDelete != null)
             {
-                url = "https://localhost:44349/api/TodoList";
+                url = "api/TodoTasks";
 
                 taskToDelete.DeletionStamp = DateTime.Now;
                 taskToDelete.Status = TodoTaskStatus.Deleted;
@@ -113,7 +122,11 @@ namespace TodoList.Pages.TODO
                 {
                     if (response.IsSuccessStatusCode)
                     {
-                        // WTF?
+                        Message = _stringLocalizer["TaskDeletedMessage"];
+                    }
+                    else
+                    {
+                        Message = _stringLocalizer["TaskDeletingErrorMessage"];
                     }
                 }
             }
@@ -123,7 +136,7 @@ namespace TodoList.Pages.TODO
 
         public async Task<IActionResult> OnPostAddAsync(int? id)
         {
-            string url = $"https://localhost:44349/api/TodoList/{id}";
+            string url = $"api/TodoTasks/{id}";
 
             if (id == null)
             {
@@ -145,13 +158,17 @@ namespace TodoList.Pages.TODO
                 completedTask.CompletionStamp = DateTime.Now;
                 completedTask.Status = TodoTaskStatus.Completed;
 
-                url = $"https://localhost:44349/api/TodoList";
+                url = $"api/TodoTasks";
 
                 using (HttpResponseMessage response = await _apiHelper.ApiClient.PutAsJsonAsync(url, completedTask))
                 {
                     if (response.IsSuccessStatusCode)
                     {
-                        // WTF?
+                        Message = _stringLocalizer["TaskCompletedMessage"];
+                    }
+                    else
+                    {
+                        Message = _stringLocalizer["TaskCompletingErrorMessage"];
                     }
                 }
             }

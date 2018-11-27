@@ -16,7 +16,7 @@ namespace TodoList.Helpers
         void InitializeClient()
         {
             ApiClient = new HttpClient();
-            //ApiClient.BaseAddress = new Uri("");
+            ApiClient.BaseAddress = new Uri("https://localhost:44349/");
             ApiClient.DefaultRequestHeaders.Accept.Clear();
             ApiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }

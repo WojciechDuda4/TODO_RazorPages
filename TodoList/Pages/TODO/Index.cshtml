@@ -10,6 +10,13 @@
     <div class="card-header">
         <h4 class="card-title">@Localizer["Title"]</h4>
     </div>
+    @if (Model.ShowMessage)
+    {
+        <div class="alert alert-info alert-dismissable" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            @Model.Message
+        </div>
+    }
     <div class="card-body">
         <div class="row">
             <div class="col-md-12">

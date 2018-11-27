@@ -39,7 +39,8 @@ namespace TodoList.Pages.TODO
 
         public async Task OnGetAsync()
         {
-            string url = "https://localhost:44349/api/TodoList?todoTaskStatus=Completed";
+            
+            string url = "api/TodoTasks?todoTaskStatus=Completed";
 
             SetViewData();
 
